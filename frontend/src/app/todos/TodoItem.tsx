@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Todo } from "@/lib/dummyData";
+import { Todo } from "@/lib/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 

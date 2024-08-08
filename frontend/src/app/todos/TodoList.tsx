@@ -1,46 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
-import { Todo, dummyTodos } from "../../lib/dummyData";
+import React, { useEffect, useState } from "react";
+import { Todo, getTodos, createTodo, updateTodo, deleteTodo } from "@/lib/api";
 import TodoItem from "./TodoItem";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>(dummyTodos);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodoTitle, setNewTodoTitle] = useState("");
   const [newTodoContent, setNewTodoContent] = useState("");
 
-  const handleAddTodo = () => {
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const fetchedTodos = await getTodos();
+        setTodos(fetchedTodos);
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      }
+    };
+
+    fetchTodos();
+  }, []);
+
+  const handleAddTodo = async () => {
     if (newTodoTitle.trim() && newTodoContent.trim()) {
-      const newTodo: Todo = {
-        id: todos.length + 1,
+      const newTodo: Omit<Todo, 'id' | 'created_at' | 'updated_at'> = {
         title: newTodoTitle,
         content: newTodoContent,
         completed: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       };
-      setTodos([...todos, newTodo]);
-      setNewTodoTitle("");
-      setNewTodoContent("");
+      try {
+        const createdTodo = await createTodo(newTodo);
+        setTodos([...todos, createdTodo]);
+        setNewTodoTitle("");
+        setNewTodoContent("");
+      } catch (error) {
+        console.error("Failed to create todo:", error);
+      }
+    }
+  }
+
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await deleteTodo(id);
+      setTodos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Failed to delete todo:", error);
     }
   };
 
-  const handleDeleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
-
-  const handleUpdateTodo = (id: number, updateTodo: Partial<Todo>) => {
-    setTodos(
-      todos.map((t) =>
-        t.id === id
-          ? { ...t, ...updateTodo, updated_at: new Date().toISOString() }
-          : t,
-      ),
-    );
-  };
+  const handleUpdateTodo = async (id:number, updatedData: Partial<Todo>) => {
+    try {
+      const updatedTodo = await updateTodo(id, updatedData);
+      setTodos(
+        todos.map((t) =>
+          t.id === id
+            ? {...t, ...updatedTodo, updated_at: new Date().toISOString() }
+            : t,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to update todo:", error)
+    }
+  }
 
   return (
     <div>
