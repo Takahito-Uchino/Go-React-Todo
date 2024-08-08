@@ -68,8 +68,8 @@ const TodoList: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Todo List</h1>
+    <div className="mx-auto max-w-lg gap-4 space-y-4">
+      <h1 className="text-center text-lg my-4">Todo List</h1>
       <Input
         placeholder="Title"
         value={newTodoTitle}
@@ -80,8 +80,10 @@ const TodoList: React.FC = () => {
         value={newTodoContent}
         onChange={(e) => setNewTodoContent(e.target.value)}
       />
-      <Button onClick={handleAddTodo}>Add Todo</Button>
-      <div>
+      <div className="flex justify-end">
+        <Button onClick={handleAddTodo}>Add Todo</Button>
+      </div>
+      <div className="space-y-4">
         {todos.map((todo) => (
           <TodoItem
             key={todo.id}
