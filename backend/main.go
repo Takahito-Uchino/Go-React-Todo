@@ -5,6 +5,7 @@ import (
 	"github.com/Takahito-Uchino/Go-React-Todo/controller"
 	"github.com/Takahito-Uchino/Go-React-Todo/model"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -13,6 +14,8 @@ func main() {
 	model.InitDB(cfg)
 
 	e := echo.New()
+
+	e.Use(middleware.CORS())
 
 	e.GET("/api/todos", controller.GetTodos)
 	e.GET("/api/todos/:id", controller.GetTodo)
