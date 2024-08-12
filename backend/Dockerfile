@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o main .
+RUN CGO_ENABLED=0 GOARCH=amd64 go build -o main .
 
 
 FROM gcr.io/distroless/static-debian12
