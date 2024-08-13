@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/Takahito-Uchino/Go-React-Todo/config"
 	"github.com/Takahito-Uchino/Go-React-Todo/controller"
 	"github.com/Takahito-Uchino/Go-React-Todo/model"
@@ -17,6 +19,9 @@ func main() {
 
 	e.Use(middleware.CORS())
 
+	e.GET("/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "OK")
+	})
 	e.GET("/api/todos", controller.GetTodos)
 	e.GET("/api/todos/:id", controller.GetTodo)
 	e.POST("/api/todos", controller.CreateTodo)
